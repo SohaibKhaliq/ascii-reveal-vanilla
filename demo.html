@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ascii-reveal-vanilla — Demo (zero backend)</title>
+<link rel="stylesheet" href="ascii-reveal-vanilla.css">
+<style>
+  body { margin: 0; background: #0b0b0d; color: #eee; font-family: system-ui, sans-serif; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 32px 20px 80px; }
+  h1 { margin: 0 0 8px; } p.sub { color: #aaa; margin-top: 0; }
+  .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 20px 0 28px; }
+  .controls select, .controls button { padding: 8px 12px; border-radius: 8px; border: 1px solid #333; background: #1a1a1e; color: #eee; cursor: pointer; }
+  .card { background: #151518; border: 1px solid #2a2a2e; border-radius: 14px; padding: 20px; margin: 18px 0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .grid img { border-radius: 10px; }
+  .stat { font-size: 28px; font-weight: 700; }
+  .muted { color: #999; font-size: 14px; }
+  pre { background: #111; border: 1px solid #2a2a2e; border-radius: 10px; padding: 14px; overflow: auto; font-size: 13px; }
+  code { color: #ffd479; }
+  .row { display: flex; gap: 16px; align-items: center; }
+  .avatar { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #5b8cff, #ff6b9d); flex-shrink: 0; }
+</style>
+<script src="ascii-reveal-vanilla.js" defer></script>
+</head>
+<body>
+<div class="wrap">
+  <h1>ascii-reveal-vanilla</h1>
+  <p class="sub">Universal vanilla ASCII reveal + skeleton. No framework, no build step, no backend. Open this file directly — no server needed.</p>
+
+  <div class="controls">
+    <label>Preset
+      <select id="preset">
+        <option value="decode">decode</option>
+        <option value="terminal">terminal</option>
+        <option value="blueprint">blueprint</option>
+        <option value="dither">dither</option>
+        <option value="scan">scan</option>
+      </select>
+    </label>
+    <label>Duration
+      <select id="duration">
+        <option value="fast">fast</option>
+        <option value="cinematic">cinematic</option>
+      </select>
+    </label>
+    <button id="replay">Replay all</button>
+    <button id="loading">Simulate loading</button>
+  </div>
+
+  <div class="card" data-ascii-reveal data-preset="decode">
+    <div class="row">
+      <div class="avatar"></div>
+      <div>
+        <h2 style="margin:0">Quan Hoang</h2>
+        <p class="muted" style="margin:4px 0 0">Product designer &amp; creative developer</p>
+      </div>
+    </div>
+    <p>Text, images and whole cards decode into place through a character grid, in one wave across the page. Content stays in the DOM — no layout shift.</p>
+    <div style="display:flex; gap:28px;">
+      <div><div class="stat">128K</div><div class="muted">Followers</div></div>
+      <div><div class="stat">4.9</div><div class="muted">Rating</div></div>
+      <div><div class="stat">312</div><div class="muted">Projects</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Image gallery (dither reveal)</h3>
+    <p class="muted">Same-origin / CORS-enabled images sample directly. CORS-blocked images fall back to a glyph texture, then fade in — no crash.</p>
+    <div class="grid">
+      <img data-ascii-img data-preset="dither" crossorigin="anonymous" src="https://picsum.photos/id/1015/600/400" alt="Mountain landscape">
+      <img data-ascii-img data-preset="dither" crossorigin="anonymous" src="https://picsum.photos/id/1016/600/400" alt="River valley">
+      <img data-ascii-img data-preset="dither" crossorigin="anonymous" src="https://picsum.photos/id/1025/600/400" alt="Dog portrait">
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Skeleton (no JS needed to paint)</h3>
+    <div data-ascii-skeleton data-lines="3" data-variant="dither"></div>
+    <div style="height:12px"></div>
+    <div data-ascii-skeleton data-lines="2" data-variant="braille" data-animate="false"></div>
+    <div style="height:12px"></div>
+    <ascii-skeleton lines="2" variant="terminal"></ascii-skeleton>
+  </div>
+
+  <div class="card" id="loading-card">
+    <h3 style="margin-top:0">Loading state</h3>
+    <div id="loading-skeleton" data-ascii-skeleton data-lines="3" data-variant="scan" style="display:none"></div>
+    <div id="loading-content" data-ascii-reveal data-preset="decode">
+      <p><strong>Static Bloom</strong> — now playing. This content decoded in after the skeleton, about 400 ms after the data arrived.</p>
+      <p class="muted">Press “Simulate loading” above to see the skeleton → reveal flow again.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Custom element</h3>
+    <ascii-reveal preset="terminal"><p>This block uses &lt;ascii-reveal&gt; — no data attributes, no JS wiring.</p></ascii-reveal>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Use it anywhere</h3>
+<pre><code>&lt;link rel="stylesheet" href="ascii-reveal-vanilla.css"&gt;
+&lt;script src="ascii-reveal-vanilla.js"&gt;&lt;/script&gt;
+&lt;div data-ascii-reveal data-preset="decode"&gt;Hello world&lt;/div&gt;</code></pre>
+    <p class="muted">MIT, public open source. Concept inspired by ascii-reveal — this is a clean, independent implementation, not a fork.</p>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var presetEl = document.getElementById('preset');
+    var durationEl = document.getElementById('duration');
+    document.getElementById('replay').addEventListener('click', function () {
+      var preset = presetEl.value, duration = durationEl.value;
+      document.querySelectorAll('[data-ascii-reveal]').forEach(function (el) {
+        el.dataset.preset = preset;
+        window.AsciiReveal.reveal(el, { preset: preset, duration: duration });
+      });
+      document.querySelectorAll('img[data-ascii-img]').forEach(function (img) {
+        window.AsciiReveal.revealImage(img, { preset: 'dither', duration: duration });
+      });
+    });
+    document.getElementById('loading').addEventListener('click', function () {
+      var sk = document.getElementById('loading-skeleton');
+      var content = document.getElementById('loading-content');
+      content.style.display = 'none';
+      sk.style.display = 'block';
+      setTimeout(function () {
+        sk.style.display = 'none';
+        content.style.display = 'block';
+        window.AsciiReveal.reveal(content, { preset: presetEl.value, duration: durationEl.value });
+      }, 1200);
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+/* ascii-reveal-vanilla v1.0.0 — theme via CSS variables */
+[data-ascii-reveal], ascii-reveal {
+  --ascii-accent: #5b8cff;
+  --ascii-skeleton: #888888;
+  --ascii-glyph: #888888;
+  --ascii-font: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.ascii-char {
+  /* inline on purpose: keeps natural word wrapping */
+}
+
+.ascii-img-wrap {
+  position: relative;
+  display: block;
+}
+.ascii-img-wrap > img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.ascii-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.ascii-skeleton {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--ascii-font);
+  color: var(--ascii-skeleton);
+}
+.ascii-sk-line {
+  white-space: nowrap;
+  overflow: hidden;
+  line-height: 1.5;
+  opacity: 0.55;
+  font-size: 14px;
+  margin: 4px 0;
+}
+.ascii-sk-block {
+  overflow: hidden;
+  opacity: 0.55;
+  font-size: 14px;
+  line-height: 1;
+}
+.ascii-sk-text {
+  user-select: none;
+}
+.ascii-sk-band {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.28) 50%, transparent 80%);
+  transform: translateX(-100%);
+  animation: ascii-sk-shimmer 1.6s infinite;
+  pointer-events: none;
+}
+@keyframes ascii-sk-shimmer {
+  to { transform: translateX(100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ascii-sk-band { animation: none; }
+}
