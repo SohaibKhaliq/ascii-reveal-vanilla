@@ -4,6 +4,14 @@ Universal vanilla ASCII reveal + skeleton library. **No framework, no build step
 
 Public open source, MIT license. Concept inspired by [ascii-reveal](https://github.com/quanhoangindex/ascii-reveal) — this is a clean, independent implementation, not a fork and not copied code.
 
+## Install
+
+```bash
+npm install ascii-reveal-vanilla
+```
+
+Or use it straight from a CDN, no install needed:
+
 ## Use it anywhere
 
 ```html
